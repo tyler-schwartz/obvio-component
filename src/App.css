@@ -60,3 +60,7 @@
 .bathtub-waterlevel.level-2  { background-color: rgb(40, 40, 230); }
 .bathtub-waterlevel.level-1  { background-color: rgb(20, 20, 230); }
 .bathtub-waterlevel.level-0  { background-color: rgb(0, 0, 230); }
+.bathtub-info {
+    display: flex;
+    justify-content: space-between;
+}

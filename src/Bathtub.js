@@ -17,16 +17,27 @@ function Bathtub(props)
         // of these cases we don't want to do anything on the state change to null.
         if (direction === null) { return; }
 
+        // Before any work is done, if we're being told to up and we're already
+        // at the desired level, reset the direction and be done.
+        if (direction === 'up' && levels.length === waterLevel) {
+            setDirection(null);
+            return;
+        }
+
+        // Change the level and set it to the state so that user sees something
+        // happening. If the delay is longer, it takes some time before any visual
+        // indication of work is happening. Creating a new array, so that we can
+        // trigger a render of the component after the state commit.
+        doChangeLevels();
+        setLevels(prevLevels => Object.assign([], levels));
+
         // Set the ref to the setInterval() id so we have something to clear when
         // the work is done.
         interval.current = setInterval(() => {
-            // let Llevels = levels
             // Depending on the direction, push or pop an element from the array
             // of water levels. Array? Easier to .map() and allows for some future-
             // proofing if it's a collection of items, opposed to just a level.
-            direction === 'up' ?
-                levels.push({}) :
-                levels.pop();
+            doChangeLevels();
 
             // Three cases where we want to stop working:
             // 1. We're moving the level up and the length of the water level
@@ -58,6 +69,12 @@ function Bathtub(props)
             setLevels(prevLevels => Object.assign([], levels));
         }, Number(delay) * 1000);
     }, [direction]);
+
+    const doChangeLevels = () => {
+        direction === 'up' ?
+            levels.push({}) :
+            levels.pop();
+    };
 
     return (
         <div className="bathtub-container">
@@ -111,7 +128,19 @@ function Bathtub(props)
                 })}
             </div>
 
-            Level: {levels.length}
+            <div className="bathtub-info">
+                <span>Direction: {direction || '--'}</span>
+                <span>Level: {levels.length}</span>
+            </div>
+
+            <p>
+                <a
+                    href="https://github.com/tyler-schwartz/obvio-component/tree/master/src"
+                    target="_blank"
+                >
+                    Github: obvio-component
+                </a>
+            </p>
         </div>
     )
 }
