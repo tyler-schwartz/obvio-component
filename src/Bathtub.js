@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 function Bathtub(props)
 {
@@ -10,6 +10,8 @@ function Bathtub(props)
     const [waterLevel, setWaterLevel] = useState(MAX_LEVEL);
     const [delay, setDelay]           = useState(DEFAULT_DELAY);
     const [tick, setTick]             = useState(0);
+    const prevDirection               = useRef(null);
+    const timeout                     = useRef(null);
 
     useEffect(() => {
         // If direction is null, we're either initializing or the work is done.
@@ -23,7 +25,7 @@ function Bathtub(props)
         if ((direction === 'up' && level >= Number(waterLevel)) ||
             (direction === 'down' && level === 0)
         ) {
-            setDirection(null);
+            doReset();
             return;
         }
 
@@ -36,8 +38,19 @@ function Bathtub(props)
         // to null and get out of here.
         if (direction === 'down' && (level - 1) === Number(waterLevel)) {
             doChangeLevels();
-            setDirection(null);
+            doReset();
             return;
+        }
+
+        // If we have a prevDirection stored and it happens to NOT be the same as
+        // the current direction, this means user has clicked the other button
+        // while the first level is rendering. When user wants to switch directions,
+        // we need to get rid of the previous timeout so the rendering doesn't
+        // get wonky.
+        if (prevDirection.current !== null &&
+            prevDirection.current !== direction
+        ) {
+            clearTimeout(timeout.current);
         }
 
         // At this point, we've figured out we're not stopping work, we're starting
@@ -45,12 +58,16 @@ function Bathtub(props)
         // happening on the screen.
         doChangeLevels();
 
+        // Storing the current direction in a reference so we can determine the
+        // next time through if user is switching directions.
+        prevDirection.current = direction;
+
         // Use setTimeout() to increment a tick state variable. That is the only
         // work we're doing in the timeout, the useEffect() is watching the tick
         // state to fire again. Since all the stopping logic happens before the
         // timeout is triggered and because we want the instant gratification,
         // the changing of levels can't happen inside the timeout.
-        setTimeout(() => {
+        timeout.current = setTimeout(() => {
             setTick(tick => tick + 1);
         }, Number(delay) * 1000);
     }, [direction, tick]);
@@ -64,6 +81,17 @@ function Bathtub(props)
             level + 1 :
             level - 1
         );
+    };
+
+    /**
+     * A couple scenarios need to reset things, so DRY.
+     */
+    const doReset = () => {
+        setDirection(null);
+        clearTimeout(timeout.current);
+
+        prevDirection.current = null;
+        timeout.current       = null;
     };
 
     /**
@@ -138,7 +166,7 @@ function Bathtub(props)
 
             <p>
                 <a
-                    href="https://github.com/tyler-schwartz/obvio-component/blob/2.0/src/Bathtub.js"
+                    href="https://github.com/tyler-schwartz/obvio-component/blob/2.1/src/Bathtub.js"
                     rel="noreferrer"
                     target="_blank"
                 >
