@@ -29,7 +29,7 @@ function Bathtub(props)
         // indication of work is happening. Creating a new array, so that we can
         // trigger a render of the component after the state commit.
         doChangeLevels();
-        setLevels(prevLevels => Object.assign([], levels));
+        setLevels(Object.assign([], levels));
 
         // Set the ref to the setInterval() id so we have something to clear when
         // the work is done.
@@ -55,7 +55,7 @@ function Bathtub(props)
                 clearInterval(interval.current);
                 // Creating a new array, so that we can trigger a render of the
                 // component after the state commit.
-                setLevels(prevLevels => Object.assign([], levels));
+                setLevels(Object.assign([], levels));
                 // Need to make sure we change the direction to null, so that we
                 // can capture the "do work" signal again after.
                 setDirection(null);
@@ -66,7 +66,7 @@ function Bathtub(props)
             // At this point, levels has "local" changes but hasn't been saved to
             // state yet. Creating a new array, so that we can trigger a render
             // of the component after the state commit.
-            setLevels(prevLevels => Object.assign([], levels));
+            setLevels(Object.assign([], levels));
         }, Number(delay) * 1000);
     }, [direction]);
 
