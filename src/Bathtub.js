@@ -139,6 +139,7 @@ function Bathtub(props)
             <p>
                 <a
                     href="https://github.com/tyler-schwartz/obvio-component/tree/master/src"
+                    rel="noreferrer"
                     target="_blank"
                 >
                     Github: obvio-component
