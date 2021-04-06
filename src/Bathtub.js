@@ -138,7 +138,7 @@ function Bathtub(props)
 
             <p>
                 <a
-                    href="https://github.com/tyler-schwartz/obvio-component/tree/master/src"
+                    href="https://github.com/tyler-schwartz/obvio-component/blob/2.0/src/Bathtub.js"
                     rel="noreferrer"
                     target="_blank"
                 >
